@@ -3,7 +3,6 @@ const newsletterRepository = require("../repositories/newsletterRepository");
 const { sendPaymentApprovedEmail } = require("../emailService");
 const apartmentService = require("./apartmentService");
 const { runNewsletterJob } = require("./newsletterService");
-const { parseNumber } = require("../utils/number");
 
 function authenticateAdmin(username, password) {
   const adminUser = process.env.ADMIN_USERNAME || "admin";
@@ -20,7 +19,7 @@ function getDashboardData() {
 }
 
 async function approvePayment(searchRequestIdRaw) {
-  const searchRequestId = parseNumber(searchRequestIdRaw);
+  const searchRequestId = String(searchRequestIdRaw || "").trim();
   if (!searchRequestId) {
     return { status: "invalid_request" };
   }
