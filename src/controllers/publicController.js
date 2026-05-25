@@ -8,8 +8,8 @@ function renderHome(req, res) {
   });
 }
 
-async function createSearchRequest(req, res) {
-  const request = await requestService.createGuestSearchRequest(req.body);
+function createSearchRequest(req, res) {
+  const request = requestService.createGuestSearchRequest(req.body);
   if (!request) {
     return res.redirect("/?error=missing_request_fields");
   }
@@ -31,8 +31,8 @@ function loginMyArea(req, res) {
   return res.redirect(`/my-area/${accessToken.trim()}`);
 }
 
-async function renderMyAreaByToken(req, res) {
-  const areaData = await requestService.getAreaByToken(req.params.token);
+function renderMyAreaByToken(req, res) {
+  const areaData = requestService.getAreaByToken(req.params.token);
   if (!areaData) {
     return res.status(404).render("not-found", { message: "קוד הגישה לא נמצא במערכת." });
   }
@@ -49,8 +49,8 @@ function renderGuestApartmentForm(_req, res) {
   res.render("guest-apartment-form");
 }
 
-async function createGuestApartment(req, res) {
-  const apartment = await apartmentService.createGuestApartment(req.body);
+function createGuestApartment(req, res) {
+  const apartment = apartmentService.createGuestApartment(req.body);
   if (!apartment) {
     return res.redirect("/?error=missing_apartment_fields");
   }

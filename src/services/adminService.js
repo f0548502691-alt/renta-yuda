@@ -11,17 +11,11 @@ function authenticateAdmin(username, password) {
   return username === adminUser && password === adminPass;
 }
 
-async function getDashboardData() {
-  const [apartments, logs, requests] = await Promise.all([
-    apartmentService.listAllApartments(),
-    newsletterRepository.listNewsletterLogs(20),
-    searchRequestRepository.listSearchRequests(),
-  ]);
-
+function getDashboardData() {
   return {
-    apartments,
-    logs,
-    requests,
+    apartments: apartmentService.listAllApartments(),
+    logs: newsletterRepository.listNewsletterLogs(20),
+    requests: searchRequestRepository.listSearchRequests(),
   };
 }
 
@@ -31,14 +25,14 @@ async function approvePayment(searchRequestIdRaw) {
     return { status: "invalid_request" };
   }
 
-  const existing = await searchRequestRepository.getSearchRequestById(searchRequestId);
+  const existing = searchRequestRepository.getSearchRequestById(searchRequestId);
   if (!existing) {
     return { status: "request_not_found" };
   }
 
   const updated = existing.is_paid
     ? existing
-    : await searchRequestRepository.markSearchRequestAsPaid(searchRequestId);
+    : searchRequestRepository.markSearchRequestAsPaid(searchRequestId);
 
   try {
     await sendPaymentApprovedEmail(updated);

@@ -1,25 +1,21 @@
 const apartmentRepository = require("../repositories/apartmentRepository");
 const { parseApartmentsFromExcelBuffer } = require("../utils/excelApartmentParser");
-const { buildApartmentTitle } = require("../utils/apartmentTitle");
 const { parseNumber } = require("../utils/number");
 
 function normalizeApartmentInput(input) {
   const rooms = parseNumber(input.rooms);
   const price = parseNumber(input.price);
 
-  if (!input.neighborhood || !rooms || !price) {
+  if (!input.title || !input.neighborhood || !rooms || !price) {
     return null;
   }
 
-  const neighborhood = input.neighborhood.trim();
-  const address = input.address ? input.address.trim() : "";
-
   return {
-    title: buildApartmentTitle({ rooms, neighborhood, address }),
-    neighborhood,
+    title: input.title.trim(),
+    neighborhood: input.neighborhood.trim(),
     rooms,
     price,
-    address,
+    address: input.address ? input.address.trim() : "",
     description: input.description ? input.description.trim() : "",
     contact_name: input.contact_name ? input.contact_name.trim() : "",
     contact_phone: input.contact_phone ? input.contact_phone.trim() : "",
@@ -27,7 +23,7 @@ function normalizeApartmentInput(input) {
   };
 }
 
-async function createGuestApartment(input) {
+function createGuestApartment(input) {
   const normalized = normalizeApartmentInput(input);
   if (!normalized) {
     return null;
@@ -39,7 +35,7 @@ async function createGuestApartment(input) {
   });
 }
 
-async function createAdminApartment(input) {
+function createAdminApartment(input) {
   const normalized = normalizeApartmentInput(input);
   if (!normalized) {
     return null;
@@ -51,17 +47,17 @@ async function createAdminApartment(input) {
   });
 }
 
-async function importApartmentsFromExcel(fileBuffer) {
+function importApartmentsFromExcel(fileBuffer) {
   const apartments = parseApartmentsFromExcelBuffer(fileBuffer);
   if (!apartments.length) {
     return 0;
   }
 
-  await apartmentRepository.importApartments(apartments);
+  apartmentRepository.importApartments(apartments);
   return apartments.length;
 }
 
-async function listAllApartments() {
+function listAllApartments() {
   return apartmentRepository.listApartments();
 }
 

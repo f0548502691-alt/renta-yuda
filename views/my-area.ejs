@@ -29,7 +29,7 @@
   <div class="cards-grid">
     <% apartments.forEach((apartment) => { %>
     <article class="apartment-card">
-      <h4>דירה להשכרה בשכונת <%= apartment.neighborhood %></h4>
+      <h4><%= apartment.title %></h4>
       <p>שכונה: <%= apartment.neighborhood %></p>
       <p>חדרים: <%= apartment.rooms %> | מחיר: <%= formatCurrency(apartment.price) %></p>
       <p>כתובת: <%= apartment.address || "-" %></p>

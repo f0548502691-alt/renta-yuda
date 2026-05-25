@@ -20,6 +20,5 @@ router.post(
   adminController.uploadApartmentsExcel
 );
 router.post("/admin/newsletter/run", requireAdmin, adminController.runNewsletterNow);
-router.get("/internal/cron/newsletter", adminController.runScheduledNewsletter);
 
 module.exports = router;
