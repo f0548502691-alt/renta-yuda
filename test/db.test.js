@@ -4,11 +4,11 @@ const crypto = require("crypto");
 
 const { createApartment, createSearchRequest, getRelevantApartments } = require("../src/db");
 
-test("returns relevant apartments by neighborhood and rooms", () => {
+test("returns relevant apartments by neighborhood and rooms", async () => {
   const suffix = crypto.randomBytes(4).toString("hex");
   const neighborhood = `בדיקה-${suffix}`;
 
-  createApartment({
+  await createApartment({
     title: "דירת בדיקה",
     neighborhood,
     rooms: 4,
@@ -21,7 +21,7 @@ test("returns relevant apartments by neighborhood and rooms", () => {
     source: "admin",
   });
 
-  const request = createSearchRequest({
+  const request = await createSearchRequest({
     full_name: "בודק",
     phone: "0501234567",
     email: `qa-${suffix}@example.com`,
@@ -30,6 +30,6 @@ test("returns relevant apartments by neighborhood and rooms", () => {
     access_token: crypto.randomBytes(16).toString("hex"),
   });
 
-  const matches = getRelevantApartments(request);
+  const matches = await getRelevantApartments(request);
   assert.ok(matches.some((apartment) => apartment.neighborhood === neighborhood));
 });

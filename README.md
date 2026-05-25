@@ -14,6 +14,7 @@
 - Node.js + Express
 - EJS לתצוגה
 - SQLite באמצעות better-sqlite3
+- PostgreSQL (אופציונלי לפריסה דרך `DATABASE_URL`)
 - Multer + xlsx לייבוא קבצי אקסל
 - node-cron למשימות מתוזמנות
 - nodemailer לשליחת מיילים
@@ -37,12 +38,15 @@
 
 ## איפה נשמר ה-DB ולמה
 
-- בסיס הנתונים נשמר בקובץ: **`data/renta-yuda.db`**
-- זהו SQLite מקומי (`better-sqlite3`) שנבחר כי:
+- ברירת מחדל מקומית: **`data/renta-yuda.db`** (SQLite)
+- בפריסה: ניתן להגדיר **`DATABASE_URL`** ולעבור אוטומטית ל-PostgreSQL
+
+SQLite נבחר לפיתוח כי:
   1. מתאים ל-MVP ללא צורך בהתקנת שרת DB נפרד
   2. פשוט מאוד להרצה ולגיבוי (קובץ אחד)
   3. ביצועים טובים לעומסים קטנים-בינוניים של מערכת ראשונית
-  4. מאפשר לעבור בעתיד ל-PostgreSQL/MySQL עם שכבת Repository קיימת
+
+בפריסה לסקייל, PostgreSQL עדיף כי הוא תומך עומסים גבוהים יותר, חיבורים במקביל וגיבויים מנוהלים.
 
 ## התקנה והרצה
 
@@ -62,14 +66,39 @@ npm start
 - `APP_BASE_URL` - כתובת בסיס ללינקים במיילים
 - `MAIL_FROM` - כתובת שולח
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` - הגדרות SMTP
+- `DATABASE_URL` - אם מוגדר, המערכת משתמשת ב-PostgreSQL במקום SQLite
+- `PGSSL` - ערך `disable` לביטול SSL ב-PostgreSQL מקומי
+- `CRON_SECRET` - סוד לאימות קריאת Cron בפריסה
 
 אם SMTP לא מוגדר, המיילים נשלחים למצב JSON (לצורכי פיתוח) ומוצגים בלוג.
+אם SMTP כן מוגדר, המערכת שולחת מיילים אמיתיים בפועל.
+
+## פריסה ל-Vercel כולל DB
+
+הפרויקט מוכן לפריסה ל-Vercel עם:
+
+- `api/index.js` כנקודת כניסה לשרת
+- `vercel.json` עם Cron פעמיים בשבוע
+- תמיכה ב-PostgreSQL דרך `DATABASE_URL`
+
+### צעדי פריסה מומלצים
+
+1. פתח DB חיצוני (למשל Neon/Supabase Postgres).
+2. ב-Vercel הוסף משתני סביבה:
+   - `DATABASE_URL`
+   - `SESSION_SECRET`
+   - `ADMIN_USERNAME`
+   - `ADMIN_PASSWORD`
+   - `APP_BASE_URL` (הדומיין של vercel)
+   - `CRON_SECRET`
+   - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`
+3. בצע Deploy.
+4. ודא שה-Cron של Vercel מופעל לנתיב `/internal/cron/newsletter`.
 
 ## פורמט אקסל לייבוא דירות
 
 ניתן להשתמש בכותרות בעברית או באנגלית:
 
-- `title` / `כותרת`
 - `neighborhood` / `שכונה`
 - `rooms` / `חדרים`
 - `price` / `מחיר`
@@ -78,6 +107,8 @@ npm start
 - `contact_name` / `איש קשר`
 - `contact_phone` / `טלפון`
 - `contact_email` / `אימייל`
+
+`title` / `כותרת` הוא שדה אופציונלי בלבד. אם לא נשלח, המערכת יוצרת כותרת אוטומטית.
 
 ## מסלולים עיקריים
 

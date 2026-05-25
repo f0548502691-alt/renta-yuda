@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const { buildApartmentTitle } = require("./utils/apartmentTitle");
 
 let transporter;
 
@@ -40,7 +41,7 @@ function apartmentListHtml(apartments, includeContacts) {
 
     return `
       <li style="margin-bottom: 12px;">
-        <div><strong>${apt.title}</strong></div>
+        <div><strong>${buildApartmentTitle(apt)}</strong></div>
         <div>שכונה: ${apt.neighborhood} | חדרים: ${apt.rooms} | מחיר: ${apt.price.toLocaleString("he-IL")} ₪</div>
         <div>כתובת: ${apt.address || "-"}</div>
         ${contactPart}

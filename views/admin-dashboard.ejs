@@ -80,7 +80,6 @@
 <section class="card">
   <h3>הוספת דירה ידנית</h3>
   <form method="POST" action="/admin/apartments" class="form-grid">
-    <label>כותרת <input type="text" name="title" required /></label>
     <label>שכונה <input type="text" name="neighborhood" required /></label>
     <label>חדרים <input type="number" min="1" name="rooms" required /></label>
     <label>מחיר <input type="number" min="1" name="price" required /></label>
@@ -96,9 +95,9 @@
 <section class="card">
   <h3>ייבוא קובץ אקסל</h3>
   <p>
-    עמודות נתמכות (עברית/אנגלית): title/כותרת, neighborhood/שכונה, rooms/חדרים,
+    עמודות נתמכות (עברית/אנגלית): neighborhood/שכונה, rooms/חדרים,
     price/מחיר, address/כתובת, description/תיאור, contact_name/איש קשר,
-    contact_phone/טלפון, contact_email/אימייל.
+    contact_phone/טלפון, contact_email/אימייל. שדה title אופציונלי בלבד.
   </p>
   <form method="POST" action="/admin/apartments/upload" enctype="multipart/form-data">
     <input type="file" name="file" accept=".xlsx,.xls" required />
@@ -142,7 +141,6 @@
     <thead>
       <tr>
         <th>#</th>
-        <th>כותרת</th>
         <th>שכונה</th>
         <th>חדרים</th>
         <th>מחיר</th>
@@ -153,7 +151,6 @@
       <% apartments.forEach((apartment) => { %>
       <tr>
         <td><%= apartment.id %></td>
-        <td><%= apartment.title %></td>
         <td><%= apartment.neighborhood %></td>
         <td><%= apartment.rooms %></td>
         <td><%= formatCurrency(apartment.price) %></td>

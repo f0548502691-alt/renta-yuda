@@ -1,4 +1,5 @@
 const xlsx = require("xlsx");
+const { buildApartmentTitle } = require("./apartmentTitle");
 const { parseNumber } = require("./number");
 
 function readCell(row, candidates) {
@@ -22,30 +23,38 @@ function parseApartmentsFromExcelBuffer(fileBuffer) {
 
   return rows
     .map((row) => {
-      const title = readCell(row, ["title", "כותרת", "שם דירה"]);
       const neighborhood = readCell(row, ["neighborhood", "שכונה"]);
       const roomsRaw = readCell(row, ["rooms", "חדרים"]);
       const priceRaw = readCell(row, ["price", "מחיר"]);
+      const address = String(readCell(row, ["address", "כתובת"]) || "").trim();
+      const titleRaw = readCell(row, ["title", "כותרת", "שם דירה"]);
 
       const rooms = parseNumber(roomsRaw);
       const price = parseNumber(priceRaw);
 
-      if (!title || !neighborhood || !rooms || !price) {
+      if (!neighborhood || !rooms || !price) {
         return null;
       }
 
       return {
-        title: String(title).trim(),
         neighborhood: String(neighborhood).trim(),
         rooms,
         price,
-        address: String(readCell(row, ["address", "כתובת"]) || "").trim(),
+        address,
         description: String(readCell(row, ["description", "תיאור"]) || "").trim(),
         contact_name: String(readCell(row, ["contact_name", "איש קשר"]) || "").trim(),
         contact_phone: String(readCell(row, ["contact_phone", "טלפון"]) || "").trim(),
         contact_email: String(readCell(row, ["contact_email", "אימייל"]) || "")
           .trim()
           .toLowerCase(),
+        title:
+          titleRaw && String(titleRaw).trim()
+            ? String(titleRaw).trim()
+            : buildApartmentTitle({
+                rooms,
+                neighborhood: String(neighborhood).trim(),
+                address,
+              }),
         source: "admin",
       };
     })

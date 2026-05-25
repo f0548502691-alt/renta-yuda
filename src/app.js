@@ -6,6 +6,9 @@ const adminRoutes = require("./routes/adminRoutes");
 const { renderNotFound } = require("./controllers/publicController");
 
 const app = express();
+if (process.env.VERCEL) {
+  app.set("trust proxy", 1);
+}
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "..", "views"));
@@ -19,6 +22,10 @@ app.use(
     secret: process.env.SESSION_SECRET || "change-me-in-production",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
   })
 );
 
