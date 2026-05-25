@@ -1,0 +1,167 @@
+<%- include("partials/header") %>
+
+<section class="card">
+  <div class="inline-actions">
+    <h2>אזור ניהול</h2>
+    <form method="POST" action="/admin/logout">
+      <button type="submit" class="secondary">התנתקות</button>
+    </form>
+  </div>
+
+  <% if (status === "paid_ok") { %>
+  <div class="alert success">התשלום סומן ונשלח מייל אישור ללקוח.</div>
+  <% } %>
+  <% if (status === "paid_no_email") { %>
+  <div class="alert error">התשלום סומן, אך שליחת המייל נכשלה.</div>
+  <% } %>
+  <% if (status === "apartment_added") { %>
+  <div class="alert success">הדירה נוספה למערכת.</div>
+  <% } %>
+  <% if (status === "missing_apartment_fields") { %>
+  <div class="alert error">חסרים שדות חובה בעת הוספת דירה.</div>
+  <% } %>
+  <% if (status === "newsletter_sent") { %>
+  <div class="alert success">דיוור תקופתי נשלח בהצלחה.</div>
+  <% } %>
+  <% if (status === "newsletter_failed") { %>
+  <div class="alert error">שליחת הדיוור התקופתי נכשלה.</div>
+  <% } %>
+  <% if (status === "file_missing") { %>
+  <div class="alert error">לא נבחר קובץ אקסל.</div>
+  <% } %>
+  <% if (status === "no_valid_rows") { %>
+  <div class="alert error">הקובץ נקרא, אבל לא נמצאו שורות תקינות לייבוא.</div>
+  <% } %>
+  <% if (status && status.startsWith("excel_imported_")) { %>
+  <div class="alert success">
+    ייבוא הסתיים בהצלחה. נוספו <%= status.replace("excel_imported_", "") %> דירות.
+  </div>
+  <% } %>
+</section>
+
+<section class="card">
+  <h3>בקשות חיפוש</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>שם</th>
+        <th>טלפון</th>
+        <th>אימייל</th>
+        <th>חיפוש</th>
+        <th>סטטוס</th>
+        <th>פעולה</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% requests.forEach((request) => { %>
+      <tr>
+        <td><%= request.id %></td>
+        <td><%= request.full_name %></td>
+        <td><%= request.phone %></td>
+        <td><%= request.email %></td>
+        <td><%= request.preferred_rooms %> חדרים | <%= request.preferred_neighborhood %></td>
+        <td><%= request.is_paid ? "שולם" : "ממתין לתשלום" %></td>
+        <td>
+          <% if (!request.is_paid) { %>
+          <form method="POST" action="/admin/requests/<%= request.id %>/pay">
+            <button type="submit">סימון תשלום + פתיחת גישה</button>
+          </form>
+          <% } else { %>
+          <span class="muted">אין פעולה</span>
+          <% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h3>הוספת דירה ידנית</h3>
+  <form method="POST" action="/admin/apartments" class="form-grid">
+    <label>כותרת <input type="text" name="title" required /></label>
+    <label>שכונה <input type="text" name="neighborhood" required /></label>
+    <label>חדרים <input type="number" min="1" name="rooms" required /></label>
+    <label>מחיר <input type="number" min="1" name="price" required /></label>
+    <label>כתובת <input type="text" name="address" /></label>
+    <label>תיאור <textarea name="description" rows="2"></textarea></label>
+    <label>איש קשר <input type="text" name="contact_name" /></label>
+    <label>טלפון <input type="text" name="contact_phone" /></label>
+    <label>אימייל <input type="email" name="contact_email" /></label>
+    <button type="submit">הוספת דירה</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>ייבוא קובץ אקסל</h3>
+  <p>
+    עמודות נתמכות (עברית/אנגלית): title/כותרת, neighborhood/שכונה, rooms/חדרים,
+    price/מחיר, address/כתובת, description/תיאור, contact_name/איש קשר,
+    contact_phone/טלפון, contact_email/אימייל.
+  </p>
+  <form method="POST" action="/admin/apartments/upload" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xlsx,.xls" required />
+    <button type="submit">ייבוא דירות מאקסל</button>
+  </form>
+</section>
+
+<section class="card">
+  <div class="inline-actions">
+    <h3>שליחת דיוור תקופתי ידנית</h3>
+    <form method="POST" action="/admin/newsletter/run">
+      <button type="submit">שלח עכשיו</button>
+    </form>
+  </div>
+  <h4>לוג דיוורים אחרונים</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>תאריך</th>
+        <th>לקוח</th>
+        <th>אימייל</th>
+        <th>מספר דירות שנשלחו</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% logs.forEach((log) => { %>
+      <tr>
+        <td><%= formatDate(log.sent_at) %></td>
+        <td><%= log.full_name %></td>
+        <td><%= log.email %></td>
+        <td><%= log.apartments_count %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h3>דירות במערכת</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>כותרת</th>
+        <th>שכונה</th>
+        <th>חדרים</th>
+        <th>מחיר</th>
+        <th>מקור</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% apartments.forEach((apartment) => { %>
+      <tr>
+        <td><%= apartment.id %></td>
+        <td><%= apartment.title %></td>
+        <td><%= apartment.neighborhood %></td>
+        <td><%= apartment.rooms %></td>
+        <td><%= formatCurrency(apartment.price) %></td>
+        <td><%= apartment.source %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include("partials/footer") %>

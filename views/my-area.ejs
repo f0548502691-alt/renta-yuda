@@ -1,0 +1,51 @@
+<%- include("partials/header") %>
+
+<section class="card">
+  <h2>האזור האישי של <%= request.full_name %></h2>
+  <p>
+    חיפוש: לפחות <strong><%= request.preferred_rooms %></strong> חדרים,
+    שכונת <strong><%= request.preferred_neighborhood %></strong>
+  </p>
+  <p>
+    סטטוס תשלום:
+    <% if (hasFullAccess) { %>
+    <strong class="paid">מאושר - גישה מלאה</strong>
+    <% } else { %>
+    <strong class="unpaid">ממתין לתשלום - פרטי קשר מוסתרים</strong>
+    <% } %>
+  </p>
+  <% if (success === "request_saved") { %>
+  <div class="alert success">
+    הבקשה נשמרה בהצלחה. קוד הגישה שלך: <code><%= request.access_token %></code>
+  </div>
+  <% } %>
+</section>
+
+<section class="card">
+  <h3>דירות רלוונטיות לחיפוש שלך</h3>
+  <% if (!apartments.length) { %>
+  <p>עדיין אין דירות שמתאימות לחיפוש. נעדכן אותך במייל ברגע שיהיו חדשות.</p>
+  <% } else { %>
+  <div class="cards-grid">
+    <% apartments.forEach((apartment) => { %>
+    <article class="apartment-card">
+      <h4><%= apartment.title %></h4>
+      <p>שכונה: <%= apartment.neighborhood %></p>
+      <p>חדרים: <%= apartment.rooms %> | מחיר: <%= formatCurrency(apartment.price) %></p>
+      <p>כתובת: <%= apartment.address || "-" %></p>
+      <p><%= apartment.description || "ללא תיאור נוסף." %></p>
+      <% if (hasFullAccess) { %>
+      <hr />
+      <p>איש קשר: <%= apartment.contact_name || "-" %></p>
+      <p>טלפון: <%= apartment.contact_phone || "-" %></p>
+      <p>אימייל: <%= apartment.contact_email || "-" %></p>
+      <% } else { %>
+      <p class="muted">פרטי יצירת קשר יופיעו לאחר אישור תשלום.</p>
+      <% } %>
+    </article>
+    <% }) %>
+  </div>
+  <% } %>
+</section>
+
+<%- include("partials/footer") %>
