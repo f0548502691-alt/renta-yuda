@@ -1,0 +1,48 @@
+<%- include("partials/header") %>
+
+<section class="card">
+  <h2>פרסום דירה חינם (אורח)</h2>
+  <p>ניתן לפרסם דירה ללא עלות. הפרטים ייכנסו למערכת ויוצגו למחפשים רלוונטיים.</p>
+
+  <form method="POST" action="/guest-apartment" class="form-grid">
+    <label>
+      כותרת הדירה
+      <input type="text" name="title" required />
+    </label>
+    <label>
+      שכונה
+      <input type="text" name="neighborhood" required />
+    </label>
+    <label>
+      חדרים
+      <input type="number" min="1" name="rooms" required />
+    </label>
+    <label>
+      מחיר חודשי
+      <input type="number" min="1" name="price" required />
+    </label>
+    <label>
+      כתובת
+      <input type="text" name="address" />
+    </label>
+    <label>
+      תיאור
+      <textarea name="description" rows="3"></textarea>
+    </label>
+    <label>
+      איש קשר
+      <input type="text" name="contact_name" />
+    </label>
+    <label>
+      טלפון
+      <input type="text" name="contact_phone" />
+    </label>
+    <label>
+      אימייל
+      <input type="email" name="contact_email" />
+    </label>
+    <button type="submit">פרסום הדירה</button>
+  </form>
+</section>
+
+<%- include("partials/footer") %>
