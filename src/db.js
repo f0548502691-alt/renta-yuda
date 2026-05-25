@@ -107,6 +107,13 @@ async function initPostgres() {
       apartments_count INTEGER NOT NULL,
       sent_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    CREATE INDEX IF NOT EXISTS idx_apartments_active_rooms_neighborhood
+      ON apartments (active, rooms, neighborhood);
+    CREATE INDEX IF NOT EXISTS idx_newsletter_logs_sent_at
+      ON newsletter_logs (sent_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_newsletter_logs_request_id
+      ON newsletter_logs (search_request_id);
   `);
 
   const countResult = await pool.query("SELECT COUNT(*)::int AS count FROM apartments");
@@ -184,6 +191,13 @@ function initSqlite() {
       sent_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY(search_request_id) REFERENCES search_requests(id)
     );
+
+    CREATE INDEX IF NOT EXISTS idx_apartments_active_rooms_neighborhood
+      ON apartments (active, rooms, neighborhood);
+    CREATE INDEX IF NOT EXISTS idx_newsletter_logs_sent_at
+      ON newsletter_logs (sent_at);
+    CREATE INDEX IF NOT EXISTS idx_newsletter_logs_request_id
+      ON newsletter_logs (search_request_id);
   `);
 
   sqliteStatements = {
