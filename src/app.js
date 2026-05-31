@@ -22,6 +22,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.authUser || null;
+  next();
+});
+
 app.locals.formatDate = (dateText) =>
   new Date(dateText).toLocaleString("he-IL", { hour12: false });
 

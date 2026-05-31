@@ -41,6 +41,9 @@
       <p>אימייל: <%= apartment.contact_email || "-" %></p>
       <% } else { %>
       <p class="muted">פרטי יצירת קשר יופיעו לאחר אישור תשלום.</p>
+      <a class="button-link" href="/payments?token=<%= encodeURIComponent(request.access_token) %>">
+        לקבלת פרטי המפרסם הרשם עכשיו
+      </a>
       <% } %>
     </article>
     <% }) %>

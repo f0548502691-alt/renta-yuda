@@ -1,0 +1,64 @@
+<%- include("partials/header") %>
+
+<section class="card">
+  <h2>כניסה והרשמה</h2>
+  <p>
+    כדי לרכוש מנוי ולקבל את פרטי המפרסם יש להתחבר או להירשם. לאחר ההתחברות נחזיר
+    אותך אוטומטית לעמוד התשלום.
+  </p>
+
+  <% if (error) { %>
+  <div class="alert error"><%= error %></div>
+  <% } %>
+  <% if (success) { %>
+  <div class="alert success"><%= success %></div>
+  <% } %>
+
+  <div class="login-layout">
+    <div class="login-panel">
+      <h3>Google SSO</h3>
+      <p class="muted">הרשמה או התחברות מהירה באמצעות חשבון Google.</p>
+      <a class="button-link google" href="/auth/google?next=<%= encodeURIComponent(next) %>">
+        המשך עם Google
+      </a>
+    </div>
+
+    <div class="login-panel">
+      <h3>כניסה באמצעות אימייל וסיסמה</h3>
+      <form method="POST" action="/login" class="form-grid">
+        <input type="hidden" name="next" value="<%= next %>" />
+        <label>
+          אימייל
+          <input type="email" name="email" required />
+        </label>
+        <label>
+          סיסמה
+          <input type="password" name="password" required />
+        </label>
+        <button type="submit">כניסה</button>
+      </form>
+    </div>
+
+    <div class="login-panel">
+      <h3>הרשמה חדשה</h3>
+      <form method="POST" action="/register" class="form-grid">
+        <input type="hidden" name="next" value="<%= next %>" />
+        <label>
+          שם מלא
+          <input type="text" name="full_name" required />
+        </label>
+        <label>
+          אימייל
+          <input type="email" name="email" required />
+        </label>
+        <label>
+          סיסמה
+          <input type="password" name="password" minlength="6" required />
+        </label>
+        <button type="submit">הרשמה</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include("partials/footer") %>

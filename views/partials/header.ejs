@@ -12,9 +12,19 @@
         <h1>מערכת חכמה להשכרת דירות</h1>
         <nav>
           <a href="/">דף הבית</a>
+          <a href="/about">אודות</a>
+          <a href="/payments">תשלומים</a>
+          <a href="/subscribe">רכישת מנוי</a>
           <a href="/my-area">אזור אישי</a>
           <a href="/guest-apartment/new">פרסום דירה חינם</a>
           <a href="/admin/login">ניהול</a>
+          <% if (currentUser) { %>
+          <form method="POST" action="/logout" class="nav-form">
+            <button type="submit" class="link-button">התנתקות (<%= currentUser.full_name %>)</button>
+          </form>
+          <% } else { %>
+          <a href="/login">כניסה / הרשמה</a>
+          <% } %>
         </nav>
       </div>
     </header>

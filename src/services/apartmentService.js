@@ -23,7 +23,7 @@ function normalizeApartmentInput(input) {
   };
 }
 
-function createGuestApartment(input) {
+async function createGuestApartment(input) {
   const normalized = normalizeApartmentInput(input);
   if (!normalized) {
     return null;
@@ -35,7 +35,7 @@ function createGuestApartment(input) {
   });
 }
 
-function createAdminApartment(input) {
+async function createAdminApartment(input) {
   const normalized = normalizeApartmentInput(input);
   if (!normalized) {
     return null;
@@ -47,17 +47,17 @@ function createAdminApartment(input) {
   });
 }
 
-function importApartmentsFromExcel(fileBuffer) {
+async function importApartmentsFromExcel(fileBuffer) {
   const apartments = parseApartmentsFromExcelBuffer(fileBuffer);
   if (!apartments.length) {
     return 0;
   }
 
-  apartmentRepository.importApartments(apartments);
+  await apartmentRepository.importApartments(apartments);
   return apartments.length;
 }
 
-function listAllApartments() {
+async function listAllApartments() {
   return apartmentRepository.listApartments();
 }
 

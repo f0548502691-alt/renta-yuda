@@ -28,13 +28,26 @@ body {
 .header nav {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
 }
 
-.header a {
+.header a,
+.link-button {
   color: #dbeafe;
   text-decoration: none;
   font-weight: bold;
+}
+
+.nav-form {
+  margin: 0;
+}
+
+.link-button {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  width: auto;
 }
 
 main {
@@ -87,6 +100,52 @@ button {
 
 button.secondary {
   background: #475569;
+}
+
+.nav-form .link-button {
+  background: transparent;
+  color: #dbeafe;
+  border-radius: 0;
+  padding: 0;
+  width: auto;
+}
+
+.button-link {
+  display: inline-block;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.button-link.google {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  color: #1f2937;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, #eff6ff, #fff);
+  border: 1px solid #dbeafe;
+}
+
+.info-card,
+.login-panel {
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.login-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.price-line {
+  font-size: 1.15rem;
 }
 
 table {

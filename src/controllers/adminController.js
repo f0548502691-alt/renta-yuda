@@ -20,8 +20,8 @@ function logoutAdmin(req, res) {
   });
 }
 
-function renderDashboard(req, res) {
-  const dashboardData = adminService.getDashboardData();
+async function renderDashboard(req, res) {
+  const dashboardData = await adminService.getDashboardData();
   res.render("admin-dashboard", {
     ...dashboardData,
     status: req.query.status || null,
@@ -33,8 +33,8 @@ async function markRequestAsPaid(req, res) {
   return res.redirect(`/admin?status=${result.status}`);
 }
 
-function createAdminApartment(req, res) {
-  const apartment = apartmentService.createAdminApartment(req.body);
+async function createAdminApartment(req, res) {
+  const apartment = await apartmentService.createAdminApartment(req.body);
   if (!apartment) {
     return res.redirect("/admin?status=missing_apartment_fields");
   }
@@ -42,12 +42,12 @@ function createAdminApartment(req, res) {
   return res.redirect("/admin?status=apartment_added");
 }
 
-function uploadApartmentsExcel(req, res) {
+async function uploadApartmentsExcel(req, res) {
   if (!req.file) {
     return res.redirect("/admin?status=file_missing");
   }
 
-  const importedCount = apartmentService.importApartmentsFromExcel(req.file.buffer);
+  const importedCount = await apartmentService.importApartmentsFromExcel(req.file.buffer);
   if (!importedCount) {
     return res.redirect("/admin?status=no_valid_rows");
   }

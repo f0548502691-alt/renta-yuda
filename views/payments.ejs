@@ -1,0 +1,51 @@
+<%- include("partials/header") %>
+
+<section class="card hero-card">
+  <h2>תשלומים ורכישת מנוי</h2>
+  <p>
+    שלום <strong><%= user.full_name %></strong>, כאן ניתן לרכוש מנוי לפתיחת פרטי
+    המפרסמים בדירות שמתאימות לחיפוש שלך.
+  </p>
+
+  <% if (status === "payment_started") { %>
+  <div class="alert success">
+    בקשת התשלום נרשמה. מנהל המערכת יאשר את התשלום ויפתח גישה מלאה לפרטי המפרסמים.
+  </div>
+  <% } %>
+</section>
+
+<section class="card">
+  <% if (request) { %>
+  <h3>מנוי לחיפוש של <%= request.full_name %></h3>
+  <p>
+    חיפוש: לפחות <strong><%= request.preferred_rooms %></strong> חדרים,
+    שכונת <strong><%= request.preferred_neighborhood %></strong>.
+  </p>
+
+  <% if (hasFullAccess) { %>
+  <div class="alert success">התשלום כבר אושר ויש לך גישה מלאה לפרטי המפרסמים.</div>
+  <a class="button-link" href="/my-area/<%= request.access_token %>">חזרה לדירות ולפרטי קשר</a>
+  <% } else { %>
+  <p class="price-line">מנוי לפתיחת פרטי מפרסמים: <strong><%= formatCurrency(149) %></strong></p>
+  <form method="POST" action="/payments/start">
+    <input type="hidden" name="token" value="<%= token %>" />
+    <button type="submit">רכישת מנוי</button>
+  </form>
+  <p class="muted">
+    בשלב זה התשלום מסומן לאישור מנהל. לאחר אישור התשלום פרטי הקשר יופיעו באזור האישי.
+  </p>
+  <% } %>
+  <% } else { %>
+  <h3>מנוי כללי למחפשי דירות</h3>
+  <p>
+    רכישת מנוי מאפשרת לפתוח פרטי מפרסמים עבור בקשת חיפוש פעילה. אם כבר פתחת בקשת
+    חיפוש, חזור לרשימת הדירות ולחץ על כפתור "לקבלת פרטי המפרסם הרשם עכשיו".
+  </p>
+  <p class="price-line">מחיר מנוי: <strong><%= formatCurrency(149) %></strong></p>
+  <form method="POST" action="/payments/start">
+    <button type="submit">רכישת מנוי</button>
+  </form>
+  <% } %>
+</section>
+
+<%- include("partials/footer") %>
